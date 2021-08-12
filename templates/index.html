@@ -47,7 +47,11 @@
             <tbody>
                 {% for url in results.formats %}
                 <tr>
-                    <td title="{{ url.filesize }}">{{ human_readable_size(url.filesize) }}</td>
+                    {% if url.filesize %}
+                        <td title="{{ url.filesize }}">{{ human_readable_size(url.filesize) }}</td>
+                    {% else %}
+                        <td>N/A</td>
+                    {% endif %}
                     <td>{{ url.format_note }}</td>
                     <td>{{ url.fps }}</td>
                     <td>{{ url.ext }}</td>
