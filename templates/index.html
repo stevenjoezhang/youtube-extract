@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>YouTube解析</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-light bg-light mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="#">YouTube解析</a>
+    </div>
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form action = "/extract">
+                <div class="mb-3">
+                    <label for="url" class="form-label">视频链接</label>
+                    <input type="url" class="form-control" name="url" value="{{ url }}">
+                </div>
+                <button type="submit" class="btn btn-primary">解析</button>
+            </form>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-12">
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+        {% if results %}
+            <table class="table table-striped table-hover align-middle caption-top">
+            <caption>{{ results.title }}</caption>
+            <thead>
+                <tr>
+                    <th>文件大小</th>
+                    <th>分辨率</th>
+                    <th>fps</th>
+                    <th>拓展名</th>
+                    <th>视频编码</th>
+                    <th>音频编码</th>
+                    <th>链接</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for url in results.formats %}
+                <tr>
+                    <td title="{{ url.filesize }}">{{ human_readable_size(url.filesize) }}</td>
+                    <td>{{ url.format_note }}</td>
+                    <td>{{ url.fps }}</td>
+                    <td>{{ url.ext }}</td>
+                    <td>{{ url.vcodec }}</td>
+                    <td>{{ url.acodec }}</td>
+                    <td><button class="btn btn-success" data-href="{{ url.url }}">复制</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        {% endif %}
+        </div>
+    </div>
+</div>
+<script>
+    document.querySelectorAll('.btn-success').forEach(element => {
+        element.addEventListener('click', event => {
+            navigator.clipboard.writeText(element.dataset.href).then(() => {
+                alert('复制成功！');
+            }, () => {
+                alert('复制失败！');
+            });
+        });
+    });
+</script>
+</body>
+</html>
